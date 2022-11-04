@@ -4,7 +4,19 @@
 
 ##### Predict τ → 3μ decay in acelerated particle collisions.
 
-#### **Starter Kit**: https://github.com/yandexdataschool/flavours-of-physics-start
+### **Overview**
+
+The aim of this playground challenge is to find a phenomenon that is not already known to exist – charged lepton flavour violation – thereby helping to establish "[new physics](https://en.wikipedia.org/wiki/Physics_beyond_the_Standard_Model)". 
+
+The laws of nature ensure that some physical quantities, such as energy or momentum, are conserved. From [Noether’s theorem](https://en.wikipedia.org/wiki/Noether%27s_theorem), we know that each conservation law is associated with a fundamental symmetry. For example, conservation of energy is due to the time-invariance (the outcome of an experiment would be the same today or tomorrow) of physical systems. The fact that physical systems behave the same, regardless of where they are located or how they are oriented, gives rise to the conservation of linear and angular momentum.
+
+Symmetries are also crucial to the structure of the [Standard Model](https://en.wikipedia.org/wiki/Standard_Model) of particle physics, present theory of interactions at microscopic scales. Some are built into the model, while others appear accidentally from it. In the Standard Model, lepton flavour, the number of electrons and electron-neutrinos, muons and muon-neutrinos, and tau and tau-neutrinos, is one such conserved quantity.
+
+Interestingly, in many proposed extensions to the Standard Model, this symmetry doesn’t exist, implying decays that do not conserve lepton flavour are possible. One decay searched for at the LHC is τ → μμμ (or τ → 3μ). Observation of this decay would be a clear indication of the violation of lepton flavour and a sign of long-sought new physics.
+
+With real data from the [LHCb experiment](http://lhcb-public.web.cern.ch/lhcb-public/) at the LHC, mixed with simulated datasets of the decay, the metric used includes checks that physicists do in their analysis to make sure the results are unbiased. These checks have been built to help ensure that the results will be useful for physicists in future studies.
+
+Review the [Data Page](https://www.kaggle.com/c/flavours-of-physics-kernels-only/data) and download the [Starter Kit](https://github.com/yandexdataschool/flavours-of-physics-start).
 
 ### **Dataset Description**
 
