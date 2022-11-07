@@ -20,6 +20,8 @@ Review the [Data Page](https://www.kaggle.com/c/flavours-of-physics-kernels-only
 
 ### **Dataset Description**
 
+**NOTE: ** Due to large dataset size not possible to push from git, Complete of dataset available [here](https://huggingface.co/datasets/n1ghtf4l1/super-collider). 
+
 In this repository, given a list of collision events and their properties. task is to predict whether a τ → 3μ decay happened in this collision. This τ → 3μ is currently assumed by scientists not to happen, and the goal of this [task](https://www.kaggle.com/competitions/flavours-of-physics-kernels-only/overview) is to discover τ → 3μ happening more frequently than scientists currently can understand.
 
 It is challenging to design a machine learning problem for something never observed before. Scientists at CERN developed the following designs to achieve the goal.
