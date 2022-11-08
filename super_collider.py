@@ -1,4 +1,4 @@
-__author__ = 'n1ghtf4l1'
+__author__ = 'Anubhav De'
 
 """
 Given a list of collision events and their properties, predict whether a τ → 3μ decay happened in the collision.
