@@ -62,16 +62,9 @@ def check_correlation_knn(probabilities, mass):
     cvm.fit(df_mass, y_true)
     return cvm(y_true, y_pred, sample_weight=None)
 
-def roc_auc_truncated(labels, predictions, tpr_thresholds=(0.2, 0.4, 0.6, 0.8),
-                      roc_weights=(4, 3, 2, 1, 0)):
+def roc_auc_truncated(labels, predictions, tpr_thresholds=(0.2, 0.4, 0.6, 0.8), roc_weights=(4, 3, 2, 1, 0)):
     """
     Compute weighted area under ROC curve.
-
-    :param labels: array-like, true labels
-    :param predictions: array-like, predictions
-    :param tpr_thresholds: array-like, true positive rate thresholds delimiting the ROC segments
-    :param roc_weights: array-like, weights for true positive rate segments
-    :return: weighted AUC
     """
     assert np.all(predictions >= 0.) and np.all(predictions <= 1.), 'Data predictions are out of range [0, 1]'
     assert len(tpr_thresholds) + 1 == len(roc_weights), 'Incompatible lengths of thresholds and weights'
@@ -90,11 +83,6 @@ def roc_auc_truncated(labels, predictions, tpr_thresholds=(0.2, 0.4, 0.6, 0.8),
 def __roc_curve_splitted(data_zero, data_one, sample_weights_zero, sample_weights_one):
     """
     Compute roc curve
-    :param data_zero: 0-labeled data
-    :param data_one:  1-labeled data
-    :param sample_weights_zero: weights for 0-labeled data
-    :param sample_weights_one:  weights for 1-labeled data
-    :return: roc curve
     """
     labels = [0] * len(data_zero) + [1] * len(data_one)
     weights = np.concatenate([sample_weights_zero, sample_weights_one])
@@ -105,11 +93,6 @@ def __roc_curve_splitted(data_zero, data_one, sample_weights_zero, sample_weight
 def compute_ks(data_prediction, mc_prediction, weights_data, weights_mc):
     """
     Compute Kolmogorov-Smirnov (ks) distance between real data predictions cdf and Monte Carlo one.
-    :param data_prediction: array-like, real data predictions
-    :param mc_prediction: array-like, Monte Carlo data predictions
-    :param weights_data: array-like, real data weights
-    :param weights_mc: array-like, Monte Carlo weights
-    :return: ks value
     """
     assert len(data_prediction) == len(weights_data), 'Data length and weight one must be the same'
     assert len(mc_prediction) == len(weights_mc), 'Data length and weight one must be the same'
@@ -127,7 +110,7 @@ def compute_ks(data_prediction, mc_prediction, weights_data, weights_mc):
 
     Dnm = np.max(np.abs(fpr - tpr))
     return Dnm
-#--------------- metric importances ----------------#
+
 def mc_metric(model, corr_check, features):
     y_corr = model.predict_proba(corr_check[features])[:, 1]
     corr_metric = check_correlation(y_corr, corr_check['mass'])
@@ -161,15 +144,15 @@ def auc_importances(model, X_train, y_train, features):
         X_train[col] = save
         imp_auc.append(base_auc - m_auc)
     return imp_auc
-#--------------- feature engineering -------------- #
+
+# feature engineering
 def add_features(df):
-    # features used by the others on Kaggle
     df['NEW_FD_SUMP']=df['FlightDistance']/(df['p0_p']+df['p1_p']+df['p2_p'])
     df['NEW5_lt']=df['LifeTime']*(df['p0_IP']+df['p1_IP']+df['p2_IP'])/3
     df['p_track_Chi2Dof_MAX'] = df.loc[:, ['p0_track_Chi2Dof', 'p1_track_Chi2Dof', 'p2_track_Chi2Dof']].max(axis=1)
-    #df['flight_dist_sig'] = df['FlightDistance']/df['FlightDistanceError'] # modified to:
+
     df['flight_dist_sig2'] = (df['FlightDistance']/df['FlightDistanceError'])**2
-    # features from phunter
+
     df['flight_dist_sig'] = df['FlightDistance']/df['FlightDistanceError']
     df['NEW_IP_dira'] = df['IP']*df['dira']
     df['p0p2_ip_ratio']=df['IP']/df['IP_p0p2']
@@ -177,17 +160,14 @@ def add_features(df):
     df['DCA_MAX'] = df.loc[:, ['DOCAone', 'DOCAtwo', 'DOCAthree']].max(axis=1)
     df['iso_bdt_min'] = df.loc[:, ['p0_IsoBDT', 'p1_IsoBDT', 'p2_IsoBDT']].min(axis=1)
     df['iso_min'] = df.loc[:, ['isolationa', 'isolationb', 'isolationc','isolationd', 'isolatione', 'isolationf']].min(axis=1)
-    # My:
-    # new combined features just to minimize their number;
-    # their physical sense doesn't matter
+
     df['NEW_iso_abc'] = df['isolationa']*df['isolationb']*df['isolationc']
     df['NEW_iso_def'] = df['isolationd']*df['isolatione']*df['isolationf']
     df['NEW_pN_IP'] = df['p0_IP']+df['p1_IP']+df['p2_IP']
     df['NEW_pN_p']  = df['p0_p']+df['p1_p']+df['p2_p']
     df['NEW_IP_pNpN'] = df['IP_p0p2']*df['IP_p1p2']
     df['NEW_pN_IPSig'] = df['p0_IPSig']+df['p1_IPSig']+df['p2_IPSig']
-    #My:
-    # "super" feature changing the result from 0.988641 to 0.991099
+
     df['NEW_FD_LT']=df['FlightDistance']/df['LifeTime']
     return df
 
@@ -216,12 +196,10 @@ features = list(f for f in train.columns if f not in filter_out)
 filter_imp = ['NEW_iso_def','NEW_iso_abc','NEW_pN_IP','iso_min','NEW_IP_pNpN',
               'FlightDistance','flight_dist_sig']
 
-#features = list(f for f in features if f not in filter_imp)
-
-# get validation data
+# validation data
 train_val, test_val, y_train, y_test, train_id, test_id = train_test_split(train, signal, trainids, random_state=100, test_size=0.15, shuffle=True)
 
-#-------------------  UGBC model -------------------- #
+# UGBC Model
 if DO_BIN:
     print("Train a UGradientBoostingClassifier")
     loss_bin = BinFlatnessLossFunction(['mass'], n_bins=15, uniform_label=0 , fl_coefficient=15, power=2)
@@ -249,9 +227,8 @@ if DO_BIN:
         check_agreement[check_agreement['signal'] == 0]['weight'].values,
         check_agreement[check_agreement['signal'] == 1]['weight'].values)
     print("bin: ks:",ks_bin)
-# ------
+
 # Determine importances
-# ------
     if DO_IMP:
         imp_mc = mc_importances(ugbc_bin, corr_check, features)
         imp_auc = auc_importances(ugbc_bin, train, train['signal'], features)
@@ -264,7 +241,7 @@ if DO_BIN:
     submission.to_csv("ugbc_bin.csv", index=False)
     print("UGBC  BinFlatnessLossFunction Predictions done...")
     print("....")
-#---------------
+
 if DO_ADA:
     loss_ada = KnnAdaLossFunction(['mass'], uniform_label=0, knn=8)
     
@@ -298,7 +275,7 @@ if DO_ADA:
     submission.to_csv("ugbc_ada.csv", index=False)
     print("UGBC  KnnAdaLossFunction Predictions done...")
     print("....")
-#-------------------
+
 if DO_KNNF:
     loss_knnf = KnnFlatnessLossFunction(['mass'], uniform_label=0, n_neighbours=24, fl_coefficient=15, power=2)
 
@@ -332,10 +309,10 @@ if DO_KNNF:
     submission.to_csv("ugbc_knnf.csv", index=False)
     print("UGBC KnnFlatnessLossFunction Predictions done...")
     print("....")
-#-------------------
+
 # Have a go at a neural net
 clf = MLPClassifier(layers=[12,12], epochs=600)
-#clf.fit(train_val[features + ['mass']], train_val['signal'])
+
 clf.fit(train_val[features], train_val['signal'])
 y_pred = clf.predict_proba(test_val[features])[:, 1]
 roc_auc_nn = roc_auc_score(y_test, y_pred) 
@@ -359,7 +336,7 @@ submission = pd.DataFrame({"id": test["id"], "prediction": test_probs_nn})
 submission.to_csv("nn.csv", index=False)
 print("UGBC MLPClassifier Predictions done...")
 print("....")
-#------ 
+
 # adadelta trainer
 # 10,10 500 adadelta showed very good accuracy bad mass corr
 clf = MLPClassifier(layers=[15,15], epochs=500,trainer='adadelta')
@@ -386,8 +363,7 @@ submission = pd.DataFrame({"id": test["id"], "prediction": test_probs_nn_ada})
 submission.to_csv("nn_adadelta.csv", index=False)
 print("UGBC MLPClassifier adadelta Predictions done...")
 print("....")
-#-------------------
-# ensemble of nn's
+
 # simple non-adadelta nn's seem to get decent accuracy with low mass correlation
 # adadelta seem capable of very good accuracy with worse mass correlation
 # try for a good accuracy low correlation ensemble of the two
@@ -395,12 +371,11 @@ p_weight = 0.90
 # Weighted average of the predictions:
 result = pd.DataFrame({'id': test['id']})
 result['prediction'] = 0.5*(p_weight*test_probs_nn + (1 - p_weight)*test_probs_nn_ada)
+
 # Write to the submission file:
 result.to_csv('nn_ens_sub.csv', index=False, header=["id", "prediction"], sep=',', mode='a')
 #-------------------
 # Have a go at an ensembled neural net
-# 
-#base_network = MLPClassifier(layers=[10], trainer='adadelta', trainer_parameters={'batch': 600})
 if False:      # giving trainer_parameters errs out. this runs but slow, turning off for now.
     base_network = MLPClassifier(layers=[10], trainer='adadelta')
     abc = AdaBoostClassifier(base_estimator=base_network, n_estimators=20)
