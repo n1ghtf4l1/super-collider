@@ -240,7 +240,6 @@ if DO_BIN:
     submission = pd.DataFrame({"id": test["id"], "prediction": test_probs})
     submission.to_csv("ugbc_bin.csv", index=False)
     print("UGBC  BinFlatnessLossFunction Predictions done...")
-    print("....")
 
 if DO_ADA:
     loss_ada = KnnAdaLossFunction(['mass'], uniform_label=0, knn=8)
@@ -274,7 +273,6 @@ if DO_ADA:
     submission = pd.DataFrame({"id": test["id"], "prediction": test_probs})
     submission.to_csv("ugbc_ada.csv", index=False)
     print("UGBC  KnnAdaLossFunction Predictions done...")
-    print("....")
 
 if DO_KNNF:
     loss_knnf = KnnFlatnessLossFunction(['mass'], uniform_label=0, n_neighbours=24, fl_coefficient=15, power=2)
@@ -308,7 +306,6 @@ if DO_KNNF:
     submission = pd.DataFrame({"id": test["id"], "prediction": test_probs})
     submission.to_csv("ugbc_knnf.csv", index=False)
     print("UGBC KnnFlatnessLossFunction Predictions done...")
-    print("....")
 
 # Have a go at a neural net
 clf = MLPClassifier(layers=[12,12], epochs=600)
@@ -335,7 +332,6 @@ test_probs_nn = clf.predict_proba(test[features])[:,1]
 submission = pd.DataFrame({"id": test["id"], "prediction": test_probs_nn})
 submission.to_csv("nn.csv", index=False)
 print("UGBC MLPClassifier Predictions done...")
-print("....")
 
 # adadelta trainer
 # 10,10 500 adadelta showed very good accuracy bad mass corr
@@ -362,7 +358,6 @@ test_probs_nn_ada = clf.predict_proba(test[features])[:,1]
 submission = pd.DataFrame({"id": test["id"], "prediction": test_probs_nn_ada})
 submission.to_csv("nn_adadelta.csv", index=False)
 print("UGBC MLPClassifier adadelta Predictions done...")
-print("....")
 
 # simple non-adadelta nn's seem to get decent accuracy with low mass correlation
 # adadelta seem capable of very good accuracy with worse mass correlation
@@ -401,4 +396,3 @@ if False:      # giving trainer_parameters errs out. this runs but slow, turning
     submission = pd.DataFrame({"id": test["id"], "prediction": test_probs})
     submission.to_csv("nn.csv", index=False) 
     print("UGBC MLPClassifier Predictions done...")
-    print("....")
